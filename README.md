@@ -1,4 +1,4 @@
-# Aplicativo de Lista de Tarefas ✅
+# Todo List Application ✅
 
 [![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://to-do-list-app.vercel.app/)
 [![Next.js](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
@@ -6,102 +6,169 @@
 [![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Zustand](https://img.shields.io/badge/zustand-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://github.com/pmndrs/zustand)
-[![Context API](https://img.shields.io/badge/Context--API-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/docs/context.html)
 
-## 📝 Descrição
+## 📝 Description
 
-Um aplicativo de **Lista de Tarefas** moderno e intuitivo construído com **Next.js**, **React**, **TypeScript**, **TailwindCSS**, **Zustand** para gerenciamento de estado e **React Context API**. O aplicativo permite aos usuários criar, atualizar, excluir e gerenciar suas tarefas em uma interface limpa e moderna.
+A modern and intuitive **Todo List** application built with **Next.js**, **React**, **TypeScript**, **TailwindCSS**, and **Zustand** for state management. The application allows users to create, update, delete, and manage their tasks in a clean and modern interface.
 
-Projetado para entusiastas de produtividade, profissionais ocupados e qualquer pessoa que busque organizar suas tarefas de forma eficiente, esta aplicação oferece uma maneira simples de acompanhar suas tarefas com uma experiência amigável ao usuário.
+Designed for productivity enthusiasts, busy professionals, and anyone looking to organize their tasks efficiently, this application offers a simple way to track your tasks with a user-friendly experience.
 
-## ✨ Prévia
+## ✨ Preview
 
-<img src="https://github.com/venturelli-91/To-do-list/raw/main/todo_project.png" alt="Prévia do Aplicativo de Lista de Tarefas" width="600"/>
+<img src="https://github.com/venturelli-91/To-do-list/raw/main/todo_project.png" alt="Todo List Application Preview" width="600"/>
 
-## 📌 Funcionalidades
+## 📌 Features
 
-- **Adicionar Tarefas**: Os usuários podem facilmente adicionar tarefas à sua lista.
-- **Editar Tarefas**: As tarefas podem ser atualizadas com novas informações.
-- **Excluir Tarefas**: Remova facilmente tarefas concluídas ou indesejadas.
-- **Marcar Tarefas como Concluídas**: Alterne o status de conclusão das tarefas.
-- **Design Responsivo**: Totalmente responsivo para uma ótima experiência em dispositivos móveis e desktop.
-- **Gerenciamento Avançado de Estado**: Utiliza Zustand para um gerenciamento eficiente de estado global.
-- **Arquitetura baseada em Contexto**: Usa React Context API para temas e preferências do usuário.
-- **Framework Next.js**: Aproveita o poder do Next.js para renderização do lado do servidor e desempenho otimizado.
+- ✅ **Add Tasks**: Users can easily add tasks to their list
+- ✏️ **Edit Tasks**: Tasks can be updated with new information
+- 🗑️ **Delete Tasks**: Easily remove completed or unwanted tasks
+- ✔️ **Mark Tasks as Completed**: Toggle the completion status of tasks
+- 📱 **Responsive Design**: Fully responsive for great experience on mobile and desktop
+- 💾 **Persistent Storage**: Tasks are saved to localStorage
+- 🌓 **Dark/Light Theme**: Toggle between light and dark modes
+- 🎨 **Modern UI**: Beautiful interface with Flowbite components
+- ⚡ **Fast Performance**: Leverages Next.js for optimized performance
 
-## 🚀 Tecnologias Utilizadas
+## 🚀 Technologies Used
 
 <div style="display: inline-flex; gap: 10px; align-items: center;">
   <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" alt="Next.js" width="30" height="30"/>
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="React" width="30" height="30"/>
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" width="30" height="30"/>
   <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" alt="TailwindCSS" width="40" height="40"/>
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="Context API" width="30" height="30"/>
 </div>
 
-## 🚢 Implantação
+### Tech Stack
+
+- **Framework:** Next.js 15.1.4
+- **UI Library:** React 19
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS + Flowbite
+- **State Management:** Zustand with persist middleware
+- **Icons:** React Icons
+
+## 🚢 Deployment
 
 <a href="https://to-do-list-app.vercel.app/" target="_blank">
   <img src="https://logowik.com/content/uploads/images/vercel1868.jpg" alt="Vercel" width="40" height="40" style="border-radius: 50%; background-color: white;"/>
 </a>
 
-Acesse a aplicação diretamente: [Aplicativo de Lista de Tarefas](https://to-do-list-woad-alpha-48.vercel.app/)
+Access the live application: [Todo List App](https://to-do-list-woad-alpha-48.vercel.app/)
 
-## 🏃‍♂️ Como Executar o Projeto
+## 🏃‍♂️ Getting Started
 
-1. Clone este repositório:
+### Prerequisites
+
+- Node.js 20 or higher
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone this repository:
 
    ```bash
    git clone https://github.com/venturelli-91/To-do-list.git
    ```
 
-2. Navegue até o diretório do projeto:
+2. Navigate to the project directory:
 
    ```bash
-   cd To-do-list
+   cd To-do-list/todo_list
    ```
 
-3. Instale as dependências:
+3. Install dependencies:
 
    ```bash
    npm install
    ```
 
-4. Inicie o servidor de desenvolvimento:
+4. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-5. Acesse o aplicativo em http://localhost:3000.
+5. Access the application at http://localhost:3000
 
-## 🌟 Funcionalidades Adicionais
+### Build
 
-- **Filtragem de Tarefas**: Os usuários podem filtrar tarefas por status de conclusão (Todas, Ativas, Concluídas).
+Create an optimized production build:
 
-- **Armazenamento Local**: Todas as tarefas são salvas no armazenamento local para que persistam entre sessões.
+```bash
+npm run build
+npm start
+```
 
-- **Design Minimalista**: Interface simples, limpa e amigável ao usuário.
+### Linting
 
-- **Acessibilidade**: Construído com acessibilidade em mente, suportando navegação por teclado e leitores de tela.
+Check code quality:
 
-- **Modo Escuro**: Opção para alternar entre temas claros e escuros para uma melhor experiência do usuário.
+```bash
+npm run lint
+```
 
-## 📊 Status do Projeto
+## 📁 Project Structure
 
-![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-brightgreen)
+```
+src/
+├── components/       # Reusable UI components
+│   ├── AddTaskModal.tsx
+│   ├── TaskCard.tsx
+│   ├── TaskFooter.tsx
+│   ├── TaskNavbar.tsx
+│   └── TaskSidebar.tsx
+├── pages/           # Next.js pages
+│   ├── _app.tsx
+│   ├── _document.tsx
+│   └── index.tsx
+├── store/           # Zustand state management
+│   └── taskStore.ts
+└── styles/          # Global styles
+    └── globals.css
+```
 
-## 👨‍💻 Contribuindo
+## 💡 Usage
 
-Sinta-se à vontade para fazer fork deste repositório e contribuir =D.
+1. **Add a task:** Click the "New Task" button and enter your task title
+2. **Complete a task:** Click the checkbox next to a task to mark it as complete
+3. **Delete a task:** Click the trash icon to remove a task
+4. **Toggle theme:** Use the theme toggle button to switch between light and dark modes
+5. **Toggle sidebar:** Click the hamburger menu to show/hide the sidebar
 
-## 📬 Contato
+## 🌟 State Management
+
+This application uses [Zustand](https://github.com/pmndrs/zustand) for state management with the persist middleware for automatic localStorage synchronization. Tasks are automatically saved and restored between sessions.
+
+## 📊 Project Status
+
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+
+## 👨‍💻 Contributing
+
+Feel free to fork this repository and contribute!
+
+## 📬 Contact
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/aurelioventurelli)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/venturelli-91)
 
 ---
 
-<strong>Desenvolvido por Aurélio Venturelli.</strong>
+## 📚 Learn More
 
+To learn more about the technologies used in this project:
 
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://react.dev)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Flowbite React Documentation](https://flowbite-react.com)
+- [Zustand Documentation](https://github.com/pmndrs/zustand)
+
+## 📄 License
+
+MIT
+
+---
+
+**Developed by Aurélio Venturelli.**
