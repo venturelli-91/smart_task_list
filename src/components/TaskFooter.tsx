@@ -1,18 +1,9 @@
-import React from "react";
-import { Footer } from "flowbite-react";
+const YEAR = new Date().getFullYear();
 
-const TaskFooter = () => {
+export default function TaskFooter() {
 	return (
-		<div>
-			<Footer>
-				<Footer.Copyright
-					href="#"
-					by="Flowbite™"
-					year={2024}
-				/>
-			</Footer>
-		</div>
+		<footer className="py-4 text-center text-xs text-slate-400 dark:text-slate-500">
+			TaskFlow © {YEAR}
+		</footer>
 	);
-};
-
-export default TaskFooter;
+}
