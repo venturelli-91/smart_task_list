@@ -1,5 +1,5 @@
 import { HiViewList, HiCheck, HiClipboardList, HiPlus, HiTrash } from "react-icons/hi";
-import { useTaskStore, type Filter } from "@/store/taskStore";
+import { useTaskStore, type Filter, TAG_COLORS, type TagName } from "@/store/taskStore";
 
 const FILTERS: { value: Filter; label: string; icon: React.ReactNode }[] = [
 	{ value: "all", label: "All Tasks", icon: <HiClipboardList aria-hidden="true" /> },
@@ -12,7 +12,8 @@ interface TaskSidebarProps {
 }
 
 export default function TaskSidebar({ onNewTask }: TaskSidebarProps) {
-	const { tasks, filter, setFilter, clearCompleted } = useTaskStore();
+	const { tasks, filter, selectedTags, setFilter, setSelectedTags, clearCompleted } =
+		useTaskStore();
 
 	const stats = tasks.reduce(
 		(acc, t) => ({
@@ -22,6 +23,18 @@ export default function TaskSidebar({ onNewTask }: TaskSidebarProps) {
 		}),
 		{ all: 0, active: 0, completed: 0 }
 	);
+
+	const tagsInUse = Array.from(
+		new Set(tasks.flatMap((t) => t.tags))
+	) as TagName[];
+
+	const toggleTag = (tag: TagName) => {
+		if (selectedTags.includes(tag)) {
+			setSelectedTags(selectedTags.filter((t) => t !== tag));
+		} else {
+			setSelectedTags([...selectedTags, tag]);
+		}
+	};
 
 	return (
 		<nav
@@ -74,6 +87,30 @@ export default function TaskSidebar({ onNewTask }: TaskSidebarProps) {
 					))}
 				</ul>
 			</div>
+
+			{tagsInUse.length > 0 && (
+				<div>
+					<p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 px-1">
+						Tags
+					</p>
+					<div className="flex flex-wrap gap-1.5">
+						{tagsInUse.map((tag) => (
+							<button
+								key={tag}
+								onClick={() => toggleTag(tag)}
+								type="button"
+								aria-pressed={selectedTags.includes(tag)}
+								className={`text-xs px-2 py-1 rounded-full font-semibold capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 ${
+									selectedTags.includes(tag)
+										? TAG_COLORS[tag]
+										: "border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500"
+								}`}>
+								{tag}
+							</button>
+						))}
+					</div>
+				</div>
+			)}
 
 			<div className="mt-auto">
 				{stats.completed > 0 && (

@@ -4,21 +4,35 @@ import { persist } from "zustand/middleware";
 export type Priority = "low" | "medium" | "high";
 export type Filter = "all" | "active" | "completed";
 
+export const TAG_COLORS = {
+	work: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+	personal: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400",
+	urgent: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+	later: "bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-400",
+	learning: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+} as const;
+
+export type TagName = keyof typeof TAG_COLORS;
+
 export interface Task {
 	id: string;
 	title: string;
 	completed: boolean;
 	priority: Priority;
+	tags: string[];
 }
 
 interface TaskStore {
 	tasks: Task[];
 	filter: Filter;
-	addTask: (title: string, priority: Priority) => void;
+	selectedTags: TagName[];
+	addTask: (title: string, priority: Priority, tags?: TagName[]) => void;
 	toggleTask: (id: string) => void;
 	deleteTask: (id: string) => void;
 	clearCompleted: () => void;
 	setFilter: (filter: Filter) => void;
+	setSelectedTags: (tags: TagName[]) => void;
+	updateTaskTags: (id: string, tags: TagName[]) => void;
 }
 
 const useTaskStore = create(
@@ -26,11 +40,12 @@ const useTaskStore = create(
 		(set) => ({
 			tasks: [],
 			filter: "all",
-			addTask: (title, priority) =>
+			selectedTags: [],
+			addTask: (title, priority, tags = []) =>
 				set((state) => ({
 					tasks: [
 						...state.tasks,
-						{ id: crypto.randomUUID(), title, completed: false, priority },
+						{ id: crypto.randomUUID(), title, completed: false, priority, tags },
 					],
 				})),
 			toggleTask: (id) =>
@@ -48,6 +63,13 @@ const useTaskStore = create(
 					tasks: state.tasks.filter((task) => !task.completed),
 				})),
 			setFilter: (filter) => set({ filter }),
+			setSelectedTags: (selectedTags) => set({ selectedTags }),
+			updateTaskTags: (id, tags) =>
+				set((state) => ({
+					tasks: state.tasks.map((task) =>
+						task.id === id ? { ...task, tags } : task
+					),
+				})),
 		}),
 		{
 			name: "task-storage",

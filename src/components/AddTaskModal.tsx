@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { HiX } from "react-icons/hi";
-import { useTaskStore, type Priority } from "@/store/taskStore";
+import { useTaskStore, type Priority, type TagName } from "@/store/taskStore";
+import TagInput from "./TagInput";
 
 interface AddTaskModalProps {
 	isOpen: boolean;
@@ -30,6 +31,7 @@ const PRIORITY_STYLES: Record<
 export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 	const [title, setTitle] = useState("");
 	const [priority, setPriority] = useState<Priority>("medium");
+	const [tags, setTags] = useState<TagName[]>([]);
 	const [error, setError] = useState("");
 	const addTask = useTaskStore((s) => s.addTask);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -39,6 +41,7 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 			inputRef.current?.focus();
 			setTitle("");
 			setPriority("medium");
+			setTags([]);
 			setError("");
 		}
 	}, [isOpen]);
@@ -58,7 +61,7 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 			inputRef.current?.focus();
 			return;
 		}
-		addTask(title.trim(), priority);
+		addTask(title.trim(), priority, tags);
 		onClose();
 	};
 
@@ -147,6 +150,8 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 							))}
 						</div>
 					</fieldset>
+
+					<TagInput selected={tags} onChange={setTags} />
 
 					<div className="flex gap-2 pt-1">
 						<button
