@@ -1,20 +1,13 @@
-import { TAG_COLORS, type TagName } from "@/store/taskStore";
+import { TAG_COLORS, ALL_TAGS, type TagName } from "@/store/taskStore";
+import { toggleTag } from "@/utils/tags";
 
 interface TagInputProps {
 	selected: TagName[];
 	onChange: (tags: TagName[]) => void;
 }
 
-const ALL_TAGS: TagName[] = Object.keys(TAG_COLORS) as TagName[];
-
 export default function TagInput({ selected, onChange }: TagInputProps) {
-	const toggleTag = (tag: TagName) => {
-		if (selected.includes(tag)) {
-			onChange(selected.filter((t) => t !== tag));
-		} else {
-			onChange([...selected, tag]);
-		}
-	};
+	const handleToggle = (tag: TagName) => toggleTag(tag, selected, onChange);
 
 	return (
 		<div className="space-y-2">
@@ -25,7 +18,7 @@ export default function TagInput({ selected, onChange }: TagInputProps) {
 				{ALL_TAGS.map((tag) => (
 					<button
 						key={tag}
-						onClick={() => toggleTag(tag)}
+						onClick={() => handleToggle(tag)}
 						type="button"
 						aria-pressed={selected.includes(tag)}
 						className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 ${

@@ -14,12 +14,14 @@ export const TAG_COLORS = {
 
 export type TagName = keyof typeof TAG_COLORS;
 
+export const ALL_TAGS: TagName[] = Object.keys(TAG_COLORS) as TagName[];
+
 export interface Task {
 	id: string;
 	title: string;
 	completed: boolean;
 	priority: Priority;
-	tags: string[];
+	tags: TagName[];
 }
 
 interface TaskStore {

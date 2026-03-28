@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { HiTrash } from "react-icons/hi";
 import { useTaskStore, type Priority, TAG_COLORS } from "@/store/taskStore";
 
@@ -10,14 +11,18 @@ const PRIORITY_STYLES: Record<Priority, string> = {
 export default function TaskCard() {
 	const { tasks, filter, selectedTags, toggleTask, deleteTask } = useTaskStore();
 
-	const filtered = tasks.filter((t) => {
-		if (filter === "active" && t.completed) return false;
-		if (filter === "completed" && !t.completed) return false;
-		if (selectedTags.length > 0 && !selectedTags.some((tag) => t.tags.includes(tag))) {
-			return false;
-		}
-		return true;
-	});
+	const filtered = useMemo(
+		() =>
+			tasks.filter((t) => {
+				if (filter === "active" && t.completed) return false;
+				if (filter === "completed" && !t.completed) return false;
+				if (selectedTags.length > 0 && !selectedTags.some((tag) => t.tags.includes(tag))) {
+					return false;
+				}
+				return true;
+			}),
+		[tasks, filter, selectedTags]
+	);
 
 	if (filtered.length === 0) {
 		return (

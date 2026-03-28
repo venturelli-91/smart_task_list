@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import { HiViewList, HiCheck, HiClipboardList, HiPlus, HiTrash } from "react-icons/hi";
 import { useTaskStore, type Filter, TAG_COLORS, type TagName } from "@/store/taskStore";
+import { toggleTag } from "@/utils/tags";
 
 const FILTERS: { value: Filter; label: string; icon: React.ReactNode }[] = [
 	{ value: "all", label: "All Tasks", icon: <HiClipboardList aria-hidden="true" /> },
@@ -24,17 +26,11 @@ export default function TaskSidebar({ onNewTask }: TaskSidebarProps) {
 		{ all: 0, active: 0, completed: 0 }
 	);
 
-	const tagsInUse = Array.from(
-		new Set(tasks.flatMap((t) => t.tags))
-	) as TagName[];
-
-	const toggleTag = (tag: TagName) => {
-		if (selectedTags.includes(tag)) {
-			setSelectedTags(selectedTags.filter((t) => t !== tag));
-		} else {
-			setSelectedTags([...selectedTags, tag]);
-		}
-	};
+	const tagsInUse = useMemo(
+		() =>
+			Array.from(new Set(tasks.flatMap((t) => t.tags))) as TagName[],
+		[tasks]
+	);
 
 	return (
 		<nav
@@ -97,7 +93,7 @@ export default function TaskSidebar({ onNewTask }: TaskSidebarProps) {
 						{tagsInUse.map((tag) => (
 							<button
 								key={tag}
-								onClick={() => toggleTag(tag)}
+								onClick={() => toggleTag(tag, selectedTags, setSelectedTags)}
 								type="button"
 								aria-pressed={selectedTags.includes(tag)}
 								className={`text-xs px-2 py-1 rounded-full font-semibold capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 ${
