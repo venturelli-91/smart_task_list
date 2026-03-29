@@ -11,6 +11,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "flowbite": "^3.1.2",
     "flowbite-react": "^0.10.2",
     "next": "15.1.4",
