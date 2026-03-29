@@ -1,3 +1,4 @@
+import { memo, useCallback } from "react";
 import { TAG_COLORS, ALL_TAGS, type TagName } from "@/store/taskStore";
 import { toggleTag } from "@/utils/tags";
 
@@ -6,8 +7,11 @@ interface TagInputProps {
 	onChange: (tags: TagName[]) => void;
 }
 
-export default function TagInput({ selected, onChange }: TagInputProps) {
-	const handleToggle = (tag: TagName) => toggleTag(tag, selected, onChange);
+function TagInput({ selected, onChange }: TagInputProps) {
+	const handleToggle = useCallback(
+		(tag: TagName) => toggleTag(tag, selected, onChange),
+		[selected, onChange]
+	);
 
 	return (
 		<fieldset className="space-y-2">
@@ -34,3 +38,5 @@ export default function TagInput({ selected, onChange }: TagInputProps) {
 		</fieldset>
 	);
 }
+
+export default memo(TagInput);
