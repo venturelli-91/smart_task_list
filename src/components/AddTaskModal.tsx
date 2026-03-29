@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { HiX } from "react-icons/hi";
+import { HiX, HiSparkles } from "react-icons/hi";
 import { useTaskStore, type Priority, type TagName } from "@/store/taskStore";
+import { useCategorization } from "@/hooks/useCategorization";
 import TagInput from "./TagInput";
 
 interface AddTaskModalProps {
@@ -34,6 +35,7 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 	const [tags, setTags] = useState<TagName[]>([]);
 	const [error, setError] = useState("");
 	const addTask = useTaskStore((s) => s.addTask);
+	const { categorize, result: aiResult, loading: aiLoading } = useCategorization();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const closeButtonRef = useRef<HTMLButtonElement>(null);
 	const dialogRef = useRef<HTMLDivElement>(null);
@@ -85,6 +87,19 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 		if (isOpen) document.addEventListener("keydown", onKey);
 		return () => document.removeEventListener("keydown", onKey);
 	}, [isOpen, onClose]);
+
+	const handleSuggestTags = async () => {
+		await categorize(title);
+	};
+
+	const handleAcceptSuggestions = () => {
+		if (aiResult?.tags) {
+			setTags(aiResult.tags);
+			if (aiResult.priority && aiResult.priority !== priority) {
+				setPriority(aiResult.priority);
+			}
+		}
+	};
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -143,21 +158,33 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 							className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
 							Title <span aria-label="required">*</span>
 						</label>
-						<input
-							ref={inputRef}
-							id="task-title"
-							type="text"
-							value={title}
-							onChange={(e) => {
-								setTitle(e.target.value);
-								if (error) setError("");
-							}}
-							placeholder="What needs to be done?"
-							aria-describedby={error ? "title-error" : undefined}
-							aria-invalid={!!error}
-							aria-required="true"
-							className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
-						/>
+						<div className="flex gap-2">
+							<input
+								ref={inputRef}
+								id="task-title"
+								type="text"
+								value={title}
+								onChange={(e) => {
+									setTitle(e.target.value);
+									if (error) setError("");
+								}}
+								placeholder="What needs to be done?"
+								aria-describedby={error ? "title-error" : undefined}
+								aria-invalid={!!error}
+								aria-required="true"
+								className="flex-1 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
+							/>
+							{title.trim() && (
+								<button
+									type="button"
+									onClick={handleSuggestTags}
+									disabled={aiLoading}
+									aria-label="Suggest tags with AI"
+									className="px-3 py-2.5 rounded-xl border border-violet-200 text-violet-600 dark:border-violet-700 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 disabled:opacity-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
+									<HiSparkles className="w-4 h-4" />
+								</button>
+							)}
+						</div>
 						{error && (
 							<p
 								id="title-error"
@@ -165,6 +192,21 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 								className="mt-1.5 text-xs text-red-600 dark:text-red-400">
 								{error}
 							</p>
+						)}
+						{aiResult && (
+							<div className="mt-2 p-2 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700">
+								<p className="text-xs text-violet-700 dark:text-violet-300 mb-2">
+									AI suggests: {aiResult.reason}
+								</p>
+								{aiResult.tags.length > 0 && (
+									<button
+										type="button"
+										onClick={handleAcceptSuggestions}
+										className="text-xs px-2 py-1 rounded bg-violet-600 text-white hover:bg-violet-700 transition-colors">
+										Accept tags
+									</button>
+								)}
+							</div>
 						)}
 					</div>
 
