@@ -15,7 +15,7 @@ function TagInput({ selected, onChange }: TagInputProps) {
 
 	return (
 		<fieldset className="space-y-2">
-			<legend className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+			<legend id="tags-legend" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
 				Tags <span className="text-xs text-slate-500">(optional)</span>
 			</legend>
 			<div className="flex flex-wrap gap-2" role="group" aria-labelledby="tags-legend">

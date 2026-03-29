@@ -179,9 +179,10 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 									type="button"
 									onClick={handleSuggestTags}
 									disabled={aiLoading}
-									aria-label="Suggest tags with AI"
-									className="px-3 py-2.5 rounded-xl border border-violet-200 text-violet-600 dark:border-violet-700 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 disabled:opacity-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
+									aria-label="AI suggest tags and priority"
+									className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-700 hover:to-violet-600 text-white font-medium text-sm disabled:opacity-60 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 shadow-md hover:shadow-lg">
 									<HiSparkles className="w-4 h-4" />
+									{aiLoading ? "Analyzing..." : "AI Suggest"}
 								</button>
 							)}
 						</div>
@@ -194,24 +195,47 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 							</p>
 						)}
 						{aiResult && (
-							<div className="mt-2 p-2 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700">
-								<p className="text-xs text-violet-700 dark:text-violet-300 mb-2">
-									AI suggests: {aiResult.reason}
+							<div className="mt-3 p-3 rounded-xl bg-gradient-to-br from-violet-50 to-violet-100 dark:from-violet-900/30 dark:to-violet-800/20 border-2 border-violet-300 dark:border-violet-600">
+								<div className="flex items-start justify-between mb-2">
+									<p className="font-semibold text-violet-900 dark:text-violet-200 flex items-center gap-1.5">
+										<HiSparkles className="w-4 h-4" />
+										AI Analysis
+									</p>
+									<span className="text-xs px-2 py-1 rounded-full bg-violet-200 text-violet-700 dark:bg-violet-700 dark:text-violet-200">
+										{Math.round(aiResult.confidence * 100)}% confidence
+									</span>
+								</div>
+								<p className="text-sm text-violet-800 dark:text-violet-300 mb-3 italic">
+									"{aiResult.reason}"
 								</p>
 								{aiResult.tags.length > 0 && (
-									<button
-										type="button"
-										onClick={handleAcceptSuggestions}
-										className="text-xs px-2 py-1 rounded bg-violet-600 text-white hover:bg-violet-700 transition-colors">
-										Accept tags
-									</button>
+									<div>
+										<p className="text-xs font-medium text-violet-700 dark:text-violet-400 mb-2">
+											Suggested tags:
+										</p>
+										<div className="flex gap-2 mb-3 flex-wrap">
+											{aiResult.tags.map((tag) => (
+												<span
+													key={tag}
+													className="text-xs px-2 py-1 rounded-full bg-violet-600 text-white font-medium">
+													{tag}
+												</span>
+											))}
+										</div>
+										<button
+											type="button"
+											onClick={handleAcceptSuggestions}
+											className="w-full py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
+											✓ Accept Suggestions
+										</button>
+									</div>
 								)}
 							</div>
 						)}
 					</div>
 
 					<fieldset>
-						<legend className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+						<legend id="priority-legend" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
 							Priority
 						</legend>
 						<div className="flex gap-2" role="group" aria-labelledby="priority-legend">
