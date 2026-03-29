@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Anthropic } from "@anthropic-ai/sdk";
 
-const anthropic = new Anthropic({
-	apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2/v1/chat/completions";
+const HF_API_KEY = process.env.HUGGINGFACE_API_KEY;
 
 interface SuggestionResponse {
 	subtasks: string[];
@@ -31,9 +29,9 @@ export default async function handler(
 		});
 	}
 
-	if (!process.env.ANTHROPIC_API_KEY) {
+	if (!HF_API_KEY) {
 		return res.status(500).json({
-			error: "ANTHROPIC_API_KEY not configured",
+			error: "HUGGINGFACE_API_KEY not configured",
 			subtasks: [],
 			tags: [],
 			priority: "medium",
@@ -41,13 +39,17 @@ export default async function handler(
 	}
 
 	try {
-		const message = await anthropic.messages.create({
-			model: "claude-opus-4-6",
-			max_tokens: 500,
-			messages: [
-				{
-					role: "user",
-					content: `Analyze this task and provide suggestions:
+		const response = await fetch(HF_API_URL, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${HF_API_KEY}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				messages: [
+					{
+						role: "user",
+						content: `Analyze this task and provide suggestions:
 
 Task: "${taskTitle}"
 
@@ -57,16 +59,24 @@ Provide a JSON response with:
 3. priority: "low", "medium", or "high"
 
 Respond ONLY with valid JSON, no markdown.`,
-				},
-			],
+					},
+				],
+				max_tokens: 500,
+			}),
 		});
 
-		const content = message.content[0];
-		if (content.type !== "text") {
-			throw new Error("Unexpected response format");
+		if (!response.ok) {
+			throw new Error(`HF API error: ${response.statusText}`);
 		}
 
-		const parsed = JSON.parse(content.text);
+		const data = await response.json();
+		const text = data.choices?.[0]?.message?.content;
+
+		if (!text) {
+			throw new Error("No content in response");
+		}
+
+		const parsed = JSON.parse(text);
 
 		res.status(200).json({
 			subtasks: Array.isArray(parsed.subtasks) ? parsed.subtasks.slice(0, 4) : [],

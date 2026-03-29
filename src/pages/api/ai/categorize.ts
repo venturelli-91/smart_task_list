@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Anthropic } from "@anthropic-ai/sdk";
 
-const anthropic = new Anthropic({
-	apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2/v1/chat/completions";
+const HF_API_KEY = process.env.HUGGINGFACE_API_KEY;
 
 interface CategorizeResponse {
 	tags: string[];
@@ -34,22 +32,26 @@ export default async function handler(
 		});
 	}
 
-	if (!process.env.ANTHROPIC_API_KEY) {
+	if (!HF_API_KEY) {
 		return res.status(500).json({
 			tags: [],
 			confidence: 0,
-			reason: "API key not configured",
+			reason: "HUGGINGFACE_API_KEY not configured",
 		});
 	}
 
 	try {
-		const message = await anthropic.messages.create({
-			model: "claude-opus-4-6",
-			max_tokens: 300,
-			messages: [
-				{
-					role: "user",
-					content: `Automatically categorize this task title:
+		const response = await fetch(HF_API_URL, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${HF_API_KEY}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				messages: [
+					{
+						role: "user",
+						content: `Automatically categorize this task title:
 
 "${taskTitle}"
 
@@ -61,16 +63,24 @@ Respond ONLY with JSON format:
   "confidence": 0.95,
   "reason": "brief explanation"
 }`,
-				},
-			],
+					},
+				],
+				max_tokens: 300,
+			}),
 		});
 
-		const content = message.content[0];
-		if (content.type !== "text") {
-			throw new Error("Unexpected response format");
+		if (!response.ok) {
+			throw new Error(`HF API error: ${response.statusText}`);
 		}
 
-		const parsed = JSON.parse(content.text);
+		const data = await response.json();
+		const text = data.choices?.[0]?.message?.content;
+
+		if (!text) {
+			throw new Error("No content in response");
+		}
+
+		const parsed = JSON.parse(text);
 		const validTags = ["work", "personal", "urgent", "later", "learning"];
 		const tags = Array.isArray(parsed.tags)
 			? parsed.tags.filter((t: string) => validTags.includes(t))
