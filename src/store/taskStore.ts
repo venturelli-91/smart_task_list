@@ -16,25 +16,30 @@ export type TagName = keyof typeof TAG_COLORS;
 
 export const ALL_TAGS: TagName[] = Object.keys(TAG_COLORS) as TagName[];
 
+export type RecurrencePattern = "daily" | "weekly" | "monthly" | "none";
+
 export interface Task {
 	id: string;
 	title: string;
 	completed: boolean;
 	priority: Priority;
 	tags: TagName[];
+	recurrence: RecurrencePattern;
+	lastCompletedAt?: number;
 }
 
 interface TaskStore {
 	tasks: Task[];
 	filter: Filter;
 	selectedTags: TagName[];
-	addTask: (title: string, priority: Priority, tags?: TagName[]) => void;
+	addTask: (title: string, priority: Priority, tags?: TagName[], recurrence?: RecurrencePattern) => void;
 	toggleTask: (id: string) => void;
 	deleteTask: (id: string) => void;
 	clearCompleted: () => void;
 	setFilter: (filter: Filter) => void;
 	setSelectedTags: (tags: TagName[]) => void;
 	updateTaskTags: (id: string, tags: TagName[]) => void;
+	setTaskRecurrence: (id: string, recurrence: RecurrencePattern) => void;
 }
 
 const useTaskStore = create(
@@ -43,11 +48,11 @@ const useTaskStore = create(
 			tasks: [],
 			filter: "all",
 			selectedTags: [],
-			addTask: (title, priority, tags = []) =>
+			addTask: (title, priority, tags = [], recurrence = "none") =>
 				set((state) => ({
 					tasks: [
 						...state.tasks,
-						{ id: crypto.randomUUID(), title, completed: false, priority, tags },
+						{ id: crypto.randomUUID(), title, completed: false, priority, tags, recurrence },
 					],
 				})),
 			toggleTask: (id) =>
@@ -70,6 +75,12 @@ const useTaskStore = create(
 				set((state) => ({
 					tasks: state.tasks.map((task) =>
 						task.id === id ? { ...task, tags } : task
+					),
+				})),
+			setTaskRecurrence: (id, recurrence) =>
+				set((state) => ({
+					tasks: state.tasks.map((task) =>
+						task.id === id ? { ...task, recurrence } : task
 					),
 				})),
 		}),
