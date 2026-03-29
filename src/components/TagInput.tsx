@@ -10,17 +10,18 @@ export default function TagInput({ selected, onChange }: TagInputProps) {
 	const handleToggle = (tag: TagName) => toggleTag(tag, selected, onChange);
 
 	return (
-		<div className="space-y-2">
-			<label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-				Tags
-			</label>
-			<div className="flex flex-wrap gap-2">
+		<fieldset className="space-y-2">
+			<legend className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+				Tags <span className="text-xs text-slate-500">(optional)</span>
+			</legend>
+			<div className="flex flex-wrap gap-2" role="group" aria-labelledby="tags-legend">
 				{ALL_TAGS.map((tag) => (
 					<button
 						key={tag}
 						onClick={() => handleToggle(tag)}
 						type="button"
 						aria-pressed={selected.includes(tag)}
+						aria-label={`${tag} tag${selected.includes(tag) ? " (selected)" : ""}`}
 						className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 ${
 							selected.includes(tag)
 								? TAG_COLORS[tag]
@@ -30,6 +31,6 @@ export default function TagInput({ selected, onChange }: TagInputProps) {
 					</button>
 				))}
 			</div>
-		</div>
+		</fieldset>
 	);
 }

@@ -35,6 +35,8 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 	const [error, setError] = useState("");
 	const addTask = useTaskStore((s) => s.addTask);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const closeButtonRef = useRef<HTMLButtonElement>(null);
+	const dialogRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -43,13 +45,43 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 			setPriority("medium");
 			setTags([]);
 			setError("");
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "unset";
 		}
+		return () => {
+			document.body.style.overflow = "unset";
+		};
 	}, [isOpen]);
 
 	useEffect(() => {
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === "Escape") onClose();
+			if (e.key === "Escape") {
+				onClose();
+				return;
+			}
+
+			if (e.key === "Tab" && isOpen && dialogRef.current) {
+				const focusableElements = dialogRef.current.querySelectorAll(
+					'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+				);
+				const firstElement = focusableElements[0] as HTMLElement;
+				const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+				if (e.shiftKey) {
+					if (document.activeElement === firstElement) {
+						e.preventDefault();
+						lastElement?.focus();
+					}
+				} else {
+					if (document.activeElement === lastElement) {
+						e.preventDefault();
+						firstElement?.focus();
+					}
+				}
+			}
 		};
+
 		if (isOpen) document.addEventListener("keydown", onKey);
 		return () => document.removeEventListener("keydown", onKey);
 	}, [isOpen, onClose]);
@@ -72,13 +104,16 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 			role="dialog"
 			aria-modal="true"
 			aria-labelledby="modal-title"
+			aria-describedby="modal-description"
 			className="fixed inset-0 z-50 flex items-center justify-center p-4">
 			<div
 				className="absolute inset-0 bg-black/40 backdrop-blur-sm"
 				onClick={onClose}
 				aria-hidden="true"
 			/>
-			<div className="relative z-10 w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6">
+			<div
+				ref={dialogRef}
+				className="relative z-10 w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6">
 				<div className="flex items-center justify-between mb-5">
 					<h2
 						id="modal-title"
@@ -86,19 +121,27 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 						New Task
 					</h2>
 					<button
+						ref={closeButtonRef}
 						onClick={onClose}
-						aria-label="Close dialog"
+						aria-label="Close dialog (press Escape)"
 						className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
 						<HiX className="w-5 h-5" aria-hidden="true" />
 					</button>
 				</div>
+
+				<p
+					id="modal-description"
+					className="sr-only">
+					Fill in the task details below. Use Tab to navigate between fields,
+					press Enter to submit, or Escape to cancel.
+				</p>
 
 				<form onSubmit={handleSubmit} noValidate className="space-y-5">
 					<div>
 						<label
 							htmlFor="task-title"
 							className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-							Title
+							Title <span aria-label="required">*</span>
 						</label>
 						<input
 							ref={inputRef}
@@ -112,6 +155,7 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 							placeholder="What needs to be done?"
 							aria-describedby={error ? "title-error" : undefined}
 							aria-invalid={!!error}
+							aria-required="true"
 							className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
 						/>
 						{error && (
@@ -128,7 +172,7 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 						<legend className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
 							Priority
 						</legend>
-						<div className="flex gap-2">
+						<div className="flex gap-2" role="group" aria-labelledby="priority-legend">
 							{PRIORITIES.map((p) => (
 								<label
 									key={p}
@@ -144,6 +188,7 @@ export default function AddTaskModal({ isOpen, onClose }: AddTaskModalProps) {
 										checked={priority === p}
 										onChange={() => setPriority(p)}
 										className="sr-only"
+										aria-label={`Set priority to ${p}`}
 									/>
 									{p}
 								</label>
